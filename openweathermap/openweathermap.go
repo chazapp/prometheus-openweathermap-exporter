@@ -32,22 +32,19 @@ type OWMGeoResp struct {
 	LocalNames interface{} `json:"local_names"`
 }
 
-type OWMWeatherResp struct {
-	Timestamp int64       `json:"dt"`
-	Main      OWMMainResp `json:"main"`
-	Rain      OWMRainResp `json:"rain"`
+type OWMOnecallResp struct {
+	Current OWMDataResp   `json:"current"`
+	Hourly  []OWMDataResp `json:"hourly"`
 }
 
-type OWMForecastResp struct {
-	List []OWMWeatherResp `json:"list"`
-}
-
-type OWMMainResp struct {
-	Temperature float64 `json:"temp"`
+type OWMDataResp struct {
+	Timestamp   float64     `json:"dt"`
+	Temperature float64     `json:"temp"`
+	Rain        OWMRainResp `json:"rain"`
 }
 
 type OWMRainResp struct {
-	OneHour float64 `json:"3h"`
+	OneHour float64 `json:"1h"`
 }
 
 func NewWeatherMetrics(city string, apiKey string) *WeatherMetrics {
@@ -64,10 +61,11 @@ func NewWeatherMetrics(city string, apiKey string) *WeatherMetrics {
 func (wm *WeatherMetrics) GetWeatherMetrics(apiKey string) {
 
 	log.Debug().Msgf("Collecting weather metrics for city: %s", wm.City)
-	baseURL := "https://api.openweathermap.org/data/2.5/weather"
+	baseURL := "https://api.openweathermap.org/data/3.0/onecall"
 	params := url.Values{}
 	params.Add("lat", fmt.Sprintf("%f", wm.latitude))
 	params.Add("lon", fmt.Sprintf("%f", wm.longitude))
+	params.Add("exclude", "minutely,daily,alerts")
 	params.Add("appid", apiKey)
 	params.Add("units", "metric")
 
@@ -80,36 +78,22 @@ func (wm *WeatherMetrics) GetWeatherMetrics(apiKey string) {
 		return
 	}
 
-	var currentData OWMWeatherResp
+	var data OWMOnecallResp
 
-	if err := json.Unmarshal(body, &currentData); err != nil {
+	if err := json.Unmarshal(body, &data); err != nil {
 		log.Error().Err(err)
 		return
 	}
 
-	baseURL = "https://api.openweathermap.org/data/2.5/forecast"
-	params.Add("cnt", "2")
-	u, _ = url.ParseRequestURI(baseURL)
-	u.RawQuery = params.Encode()
-	body, err = httpGetRequestToBody(fmt.Sprintf("%v", u))
+	wm.CurrentTemperature = data.Current.Temperature
+	wm.CurrentRain = data.Current.Rain.OneHour
 
-	if err != nil {
-		log.Error().Err(err).Msgf("OWM API Error with req: %s", u)
+	if len(data.Hourly) < 4 {
+		log.Error().Msgf("OWM API Malformed forecast data. Count of hourly data %d < 4", len(data.Hourly))
 		return
 	}
-
-	var hourlyData OWMForecastResp
-
-	if err := json.Unmarshal(body, &hourlyData); err != nil {
-		log.Error().Err(err).Msgf("Unmarshal error with req: %s", u)
-		return
-	}
-
-	wm.CurrentTemperature = currentData.Main.Temperature
-	wm.CurrentRain = currentData.Rain.OneHour
-
-	wm.ForecastTemperature = hourlyData.List[len(hourlyData.List)-1].Main.Temperature
-	wm.ForecastRain = hourlyData.List[len(hourlyData.List)-1].Rain.OneHour
+	wm.ForecastTemperature = data.Hourly[4].Temperature
+	wm.ForecastRain = data.Hourly[4].Rain.OneHour
 }
 
 func (wm *WeatherMetrics) setLatitudeLongitudeFromCity(apiKey string) error {
