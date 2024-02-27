@@ -4,7 +4,7 @@
 
 args:
  - run
- - --cities=Angers,New-York,Paris
+ - --cities=Paris,London,Bruxelles,Berlin,Madrid,Lisbon,Rome
 
 apiKey: "<redacted>"
 
@@ -50,6 +50,9 @@ service:
   port: 9001
 
 serviceMonitor:
+  enabled: true
+
+prometheusRules:
   enabled: true
 
 ingress:

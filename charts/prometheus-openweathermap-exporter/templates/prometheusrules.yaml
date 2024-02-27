@@ -1,0 +1,24 @@
+{{- if .Values.prometheusRules.enabled }}
+kind: PrometheusRule
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  name: prometheus-alerts
+spec:
+  groups:
+    - name: prometheus-alerts.rules
+      rules:
+        # - alert: PrometheusResponseLatency
+        #   expr: <tbd>
+        #   for: 5m
+        #   annotations:
+        #     summary: "Prometheus latency high"
+        #     description: "Prometheus response-time is too long on route {{`{{`}}$labels.handler{{`}}`}} "
+        #   labels:
+        #     severity: critical
+        - alert: PrometheusErrorRateHigh
+          expr: sum by (handler) (rate(prometheus_http_requests_total{code!~"2.."}[10m])) / sum by (handler) (rate(prometheus_http_requests_total{}[10m])) > 0.03
+          for: 1m
+          annotations:
+            summary: "Prometheus Error Rate high"
+            description: "Prometheus responses error rate for handler {{`{{`}}$labels.handler{{`}}`}} is > 3%"
+{{- end }}

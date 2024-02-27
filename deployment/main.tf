@@ -62,7 +62,7 @@ resource "helm_release" "grafana" {
 resource "helm_release" "prometheus-openweathermap-exporter" {
   name      = "owm"
   chart = "${path.module}/../charts/prometheus-openweathermap-exporter"
-  version = "1.1.0"
+  version = "1.2.0"
   namespace = "monitoring"
   values = [
     "${file("${path.module}/prometheus-openweathermap-exporter.yaml")}"
