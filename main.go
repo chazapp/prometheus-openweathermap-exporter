@@ -12,6 +12,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var (
+	Version = "dev"
+)
+
 func main() {
 	app := &cli.App{
 		Name:  "prometheus-openweathermap-exporter",
@@ -47,6 +51,9 @@ func main() {
 					prometheus.MustRegister(&collector)
 
 					http.Handle("/metrics", promhttp.Handler())
+					http.Handle("/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						w.WriteHeader(http.StatusOK)
+					}))
 					return http.ListenAndServe(":9001", nil)
 				},
 			},
