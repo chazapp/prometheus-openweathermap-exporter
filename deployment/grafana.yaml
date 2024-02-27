@@ -1,0 +1,35 @@
+serviceMonitor:
+  enabled: true
+
+ingress:
+  enabled: true
+  hosts:
+    - grafana.local
+  tls: []
+
+persistence:
+  enabled: true
+
+admin:
+  existingSecret: grafana-admin
+  userKey: username
+  passwordKey: password
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        uid: prometheus
+        url: http://kube-prometheus-stack-prometheus:9090
+        isDefault: true
+      
+extraObjects:
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: grafana-admin
+    stringData:
+      username: admin
+      password: password
