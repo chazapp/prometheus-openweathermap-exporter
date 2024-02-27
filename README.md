@@ -1,6 +1,8 @@
 # Prometheus-OpenWeatherMap-Exporter
 
-This project allows for monitoring of OpenWeatherMap data via a Prometheus-compatible endpoint
+This project allows for monitoring of OpenWeatherMap data via a Prometheus-compatible endpoint.
+On each call to `GET /metrics`, the exporter will query the OWM API for current and forecasted
+weather data about configured cities.
 
 ## Usage
 
@@ -42,7 +44,7 @@ A Helm Chart for this project is available in the `charts/` directory for usage 
 
 ## Demo
 
-The `deployment/` directory contains the Terraform code to apply to a Minikube cluster. Instructions available in the `README.md` file.
+The `deployment/` directory contains the Terraform code to apply to a Minikube cluster. Instructions are available in the `README.md` file.
 The cluster will get configured with:
 
 - Kube-Prometheus-Stack chart
