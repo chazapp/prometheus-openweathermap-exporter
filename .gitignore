@@ -1,6 +1,5 @@
 .vscode/
 owm
-secret.yaml
 .terraform*
 terraform.tfstate*
-
+prometheus-openweathermap-exporter.yaml

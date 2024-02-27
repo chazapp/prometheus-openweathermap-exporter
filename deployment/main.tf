@@ -64,6 +64,9 @@ resource "helm_release" "prometheus-openweathermap-exporter" {
   chart = "${path.module}/../charts/prometheus-openweathermap-exporter"
   version = "1.0.0"
   namespace = "monitoring"
+  values = [
+    "${file("${path.module}/prometheus-openweathermap-exporter.yaml")}"
+  ]
   depends_on = [
     helm_release.kube-prometheus-stack
   ]

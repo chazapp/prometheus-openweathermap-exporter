@@ -9,16 +9,12 @@ a Minikube cluster. It will install the following charts:
 
 ## Usage
 
-Running the Prometheus-Openweathermap-Exporter requires an OWM API key. To provide it, add a
-`secret.yaml` file to the Charts template:
+Running the Prometheus-Openweathermap-Exporter requires an OWM API key. To provide it,
+create a `prometheus-openweathermap-exporter.yaml` values file in this directory:
 
-```yaml
-kind: Secret
-apiVersion: v1
-metadata:
-  name: prometheus-openweathermap-exporter
-stringData:
-  apiKey: <redacted>
+```bash
+$ echo "apiKey: <redacted>" >> ./prometheus-openweathermap-exporter.yaml
+...
 ```
 
 Start a Minikube cluster, then apply the Terraform code:
