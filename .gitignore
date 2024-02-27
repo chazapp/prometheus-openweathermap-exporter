@@ -1,2 +1,6 @@
 .vscode/
 owm
+secret.yaml
+.terraform*
+terraform.tfstate*
+
