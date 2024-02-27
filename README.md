@@ -23,13 +23,27 @@ COMMANDS:
 
 GLOBAL OPTIONS:
    --help, -h  show help
-$ ./owm-exporter --api-key 0xdeadbeef --cities paris,london,new-york
+$ ./owm-exporter --api-key <redacted> --cities paris,london,new-york
 Exposing metrics on ::9001/metrics
 ```
 
-## Production usage
+## Production build
 
-The `deployment/` directory contains the Terraform code to apply to a Minikube cluster. The cluster will get configured with:
+Build and publish a new Docker container to `ghcr.io`:
+
+```bash
+$ docker build -t ghcr.io/chazapp/prometheus-openweathermap-exporter --build-arg VERSION=1.x.x
+...
+$ docker push ghcr.io/chazapp/prometheus-openweathermap-exporter:1.x.x
+...
+```
+
+A Helm Chart for this project is available in the `charts/` directory for usage within a Kubernetes cluster.
+
+## Demo
+
+The `deployment/` directory contains the Terraform code to apply to a Minikube cluster. Instructions available in the `README.md` file.
+The cluster will get configured with:
 
 - Kube-Prometheus-Stack chart
 - Grafana
