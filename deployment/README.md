@@ -41,4 +41,8 @@ $ echo "192.168.42.2  prometheus.local" >> /etc/hosts
 $ minikube tunnel
 ```
 
-On Windows you may need to use `127.0.0.1` instead in your hosts file.
+_On Windows you may need to use `127.0.0.1` instead in your hosts file._
+
+This directory also contains a `dashboard.json` file that you can import in your Grafana instance to get a dashboard
+displaying temperature and rain data made available by the exporter.
+
