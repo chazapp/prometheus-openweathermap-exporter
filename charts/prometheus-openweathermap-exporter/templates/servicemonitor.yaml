@@ -1,0 +1,12 @@
+{{ if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "prometheus-openweathermap-exporter.labels" . | nindent 6 }}
+  endpoints:
+  - port: http
+{{ end }}
