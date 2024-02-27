@@ -9,4 +9,5 @@ spec:
       {{- include "prometheus-openweathermap-exporter.labels" . | nindent 6 }}
   endpoints:
   - port: http
+    interval: 1m
 {{ end }}
